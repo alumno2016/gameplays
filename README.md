@@ -1,10 +1,9 @@
 ## Tabla de Contenidos
 
-
 - [Descripción](#descripción)
 - [Requisitos](#requisitos)
 - [Instalación](#instalación)
-
+- [Credenciales](#credenciales)
 
 # Descripción
 El proyecto contiene diferentes tipos de juego de sopa de letras, aplicando distintas tecnologías de diseño bajo un entorno de trabajo Django.
@@ -20,11 +19,13 @@ Especifica los requisitos del sistema y las dependencias necesarias para ejecuta
 - Tailwind (versión 4.1)
 - Bulma (versión 1.0.4)
 
-
 ## Instalación
 
 -	git init
 -	git clone url_diectorio
 -	Luego de ejecutar el proyecto, ingrese “python3 manage.py migrate”
 
+## Credenciales
 
+- username: admin
+- password: test2025
