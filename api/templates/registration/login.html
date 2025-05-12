@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+</head>
+<body>
+    <section class="hero is-fullheight">
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-4">
+                        <h2 class="title has-text-centered">Iniciar Sesión</h2>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="field">
+                                <label class="label">Nombre de usuario</label>
+                                <div class="control">
+                                    <input class="input" type="text" placeholder="Tu nombre de usuario" name="username">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Contraseña</label>
+                                <div class="control">
+                                    <input class="input" type="password" placeholder="Tu contraseña" name="password">
+                                </div>
+                            </div>
+
+                            <div class="field is-grouped">
+                                <div class="control">
+                                    <button type="submit" class="button is-primary">Iniciar Sesión</button>
+                                </div>
+                                <div class="control">
+                                    <button class="button is-link is-light">Cancelar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

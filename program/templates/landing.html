@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sopa de Letras - Nivel Arcade</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+</head>
+
+<body>
+    <style>
+        @keyframes parpadeo {
+            0% {
+                background-color: #ffcc00;
+            }
+
+            50% {
+                background-color: #ff6600;
+            }
+
+            100% {
+                background-color: #ffcc00;
+            }
+        }
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            text-align: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+            background-image: url('https://img.freepik.com/premium-vector/seamless-pattern-with-exotic-trees-animals_460840-1532.jpg?ga=GA1.1.1950409224.1746844182&semt=ais_hybrid&w=740');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            color: #ffffff;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #ffcc00;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        td {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border: 2px solid #ffcc00;
+            background-color: #222;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.5s;
+        }
+
+        td:hover {
+            transform: scale(1.2);
+            animation: parpadeo 0.5s infinite alternate;
+        }
+
+        .selected {
+            background-color: #008cba !important;
+            color: white !important;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            font-family: 'Press Start 2P', cursive;
+            background-color: #ff6600;
+            color: white;
+            border: 3px solid #ffcc00;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #ff3300;
+            transform: scale(1.1);
+        }
+
+        form p {
+            margin-bottom: 1em;
+        }
+
+        form input[type="number"],
+        form textarea,
+        form select {
+            width: 50%;
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 0.2em;
+            background-color: #000;
+            opacity: 0.8;
+            color: #ffcc00;
+        }
+
+        form input[type="number"] {
+            text-align: center;
+        }
+
+        form p.required label:after {
+            content: "*";
+            color: red;
+            margin-left: 0.3em;
+        }
+
+        form p.error {
+            color: red;
+        }
+
+        form p.error ul {
+            list-style: none;
+            padding: 0;
+            margin: 0.3em 0;
+        }
+
+        form p.error li {
+            font-size: 0.9em;
+        }
+
+        #id_nombre {
+            border: 2px solid blue;
+        }
+
+        button[type="submit"] {
+            background-color: #ffcc00;
+            color: #000;
+            padding: 0.8em 1.5em;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        form label,
+        form span {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+            color: #fff;
+            font-size: 1.2em;
+        }
+
+        .found-word {
+            background-color: green !important;
+            color: white !important;
+        }
+    </style>
+    </head>
+
+    <body>
+        <h1>Generador de Sopa de Letras</h1>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Generar Sopa</button>
+        </form>
+
+        {% if sopa %}
+        <div class="mb-5">
+            <h2>Sopa de Letras:</h2>
+            <table border="1" id="sopa">
+                {% for fila in sopa %}
+                <tr>
+                    {% for letra in fila %}
+                    <td onclick="seleccionarLetra(this)">{{ letra }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myModalLabel">Bienvenido aventurero!</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Selecciona letra por letra haciendo click, al posicionar el puntero en cada letra mostrara un
+                            color intermitente.</p>
+                        <p>Al completar la plabra quedara resaltada, en caso contrario perdera el color de fondo.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous">
+            </script>
+
+        <script>
+
+            let seleccionadas = [];
+            let celdasSeleccionadas = [];
+            const palabrasEnSopa = '{{ palabras_encontrables }}'.replaceAll('&quot;', '"');
+            console.log(palabrasEnSopa);
+
+
+            function verificarPalabra() {
+                const palabraFormada = seleccionadas.join("");
+                if (palabrasEnSopa.includes(palabraFormada)) {
+                    console.log(`¡Encontraste la palabra: ${palabraFormada}!`);
+                    celdasSeleccionadas.forEach(celda => {
+                        celda.classList.add("found-word");
+                    });
+
+                    seleccionadas = [];
+                    celdasSeleccionadas = [];
+                } else if (palabraFormada.length > 0 && !palabrasEnSopa.some(palabra => palabra.startsWith(palabraFormada))) {
+                    celdasSeleccionadas.forEach(celda => celda.classList.remove("selected"));
+                    seleccionadas = [];
+                    celdasSeleccionadas = [];
+                }
+            }
+
+            function seleccionarLetra(td) {
+                const letra = td.innerText;
+                const index = seleccionadas.indexOf(letra);
+
+
+                if (!td.classList.contains("selected")) {
+                    td.classList.add("selected");
+                    seleccionadas.push(letra);
+                    celdasSeleccionadas.push(td);
+                } else if (celdasSeleccionadas[celdasSeleccionadas.length - 1] === td) {
+                    td.classList.remove("selected");
+                    seleccionadas.pop();
+                    celdasSeleccionadas.pop();
+                } else {
+                    celdasSeleccionadas.forEach(celda => celda.classList.remove("selected"));
+                    seleccionadas = [];
+                    celdasSeleccionadas = [];
+                    td.classList.add("selected");
+                    seleccionadas.push(letra);
+                    celdasSeleccionadas.push(td);
+                }
+
+                console.log("Palabra seleccionada: ", seleccionadas.join(""));
+                verificarPalabra();
+            }
+
+            $(document).ready(function () {
+                $('#myModal').modal('show');
+            });
+
+        </script>
+    </body>
+
+</html>

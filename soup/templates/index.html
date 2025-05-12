@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sopa de Letras - ¡Aventura de Palabras!</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            color: #000;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://img.freepik.com/premium-vector/tropical-jungle-safari-animals-bird-illustration-mural-pattern_109646-182.jpg');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        /* Estilos personalizados para la interacción y el layout */
+        .sopa-grid {
+            user-select: none; /* Evita la selección de texto al arrastrar */
+        }
+
+        .sopa-cell {
+            cursor: pointer; /* Indica que las celdas son interactivas */
+            font-family: 'Press Start 2P', cursive; /* Fuente estilo videojuego */
+        }
+
+        .sopa-cell.seleccionada {
+            background-color: #facc15; /* Amarillo brillante */
+            color: #1e293b; /* Gris oscuro */
+        }
+
+        .palabra-encontrada {
+            text-decoration: line-through;
+            color: #4ade80; /* Verde */
+        }
+
+        .sopa-cell.palabra-encontrada-en-sopa {
+            background-color: #4ade80; /* Verde */
+            color: #1e293b;
+            font-weight: bold;
+        }
+
+        .lista-palabras li {
+            font-family: 'Press Start 2P', cursive;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white p-8 font-mono">
+    <div class="container mx-auto">
+        <h1 class="text-4xl font-bold text-center mb-8" style="font-family: 'Press Start 2P', cursive;">
+            Reto de las palabras
+        </h1>
+
+        <div class="palabras+-lista mt-8 pt-8">
+            <h2 class="text-2xl font-semibold mb-4" style="font-family: 'Press Start 2P', cursive;">
+                ¡Encuentra las Palabras!
+            </h2>
+            <ul id="listaPalabras" class="list-disc pl-5 text-lg grid h-56 grid-cols-3 content-start gap-4">
+                {% for palabra in palabras %}
+                <li data-palabra="{{ palabra }}">{{ palabra }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="sopa-grid grid gap-1 md:gap-2 mt-10" id="sopaGrid" style="grid-template-columns: repeat({{ sopa.0|length }}, minmax(30px, 1fr));">
+            {% for fila in sopa %}
+                {% for letra in fila %}
+                    <div class="sopa-cell h-8  md:h-12 border border-gray-700 flex justify-center items-center text-xl md:text-2xl text-center"
+                         data-row="{{ forloop.parentloop.counter0 }}"
+                         data-col="{{ forloop.counter0 }}">{{ letra }}</div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+    </div>
+
+     <div id="myModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-xl text-black font-bold mb-4">Bienvenido!</h2>
+            <p class="text-gray-700 mb-4">Arrastre con el puntero de forma sostenida.</p>
+            <p class="text-gray-700 mb-4">Al encontrar las palabras listadas quedaran con el color de fondo fijo y se resaltara la hallada en el listado.</p>
+            <p class="text-gray-700 mb-4">Haga click entre los espacios para dejar de selecionar las letras.</p>
+            <button id="closeModal" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('myModal');
+            const closeModalButton = document.getElementById('closeModal');
+
+            // Show the modal on page load
+            modal.classList.remove('hidden');
+
+            // Optional: Add functionality to close the modal
+            if (closeModalButton) {
+                closeModalButton.addEventListener('click', function() {
+                    modal.classList.add('hidden');
+                });
+            }
+
+            // Optional: Close the modal when clicking outside
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
+    <script>
+        const sopaGrid = document.getElementById('sopaGrid');
+        const celdas = document.querySelectorAll('.sopa-cell');
+        const listaPalabras = document.getElementById('listaPalabras');
+        let seleccion = [];
+        let palabraSeleccionada = "";
+        let arrastrando = false;
+        let primeraCelda = null;
+
+        sopaGrid.addEventListener('mousedown', (e) => {
+            arrastrando = true;
+            seleccion = [];
+            palabraSeleccionada = "";
+            primeraCelda = e.target;
+            if (primeraCelda.classList.contains('sopa-cell')) {
+                primeraCelda.classList.add('seleccionada');
+                seleccion.push(primeraCelda);
+                palabraSeleccionada += primeraCelda.textContent;
+            }
+        });
+
+        sopaGrid.addEventListener('mouseup', () => {
+            if (arrastrando && palabraSeleccionada.length > 0) {
+                verificarPalabra(palabraSeleccionada);
+                seleccion = [];
+                palabraSeleccionada = "";
+                primeraCelda = null;
+            }
+            celdas.forEach(celda => celda.classList.remove('seleccionada'));
+            arrastrando = false;
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (arrastrando && palabraSeleccionada.length > 0) {
+                verificarPalabra(palabraSeleccionada);
+                seleccion = [];
+                palabraSeleccionada = "";
+                primeraCelda = null;
+            }
+            celdas.forEach(celda => celda.classList.remove('seleccionada'));
+            arrastrando = false;
+        });
+
+        sopaGrid.addEventListener('mousemove', (e) => {
+            if (arrastrando && e.target.classList.contains('sopa-cell')) {
+                const celdaActual = e.target;
+                if (!seleccion.includes(celdaActual)) {
+                    const ultimaCelda = seleccion[seleccion.length - 1];
+                    const rowUltima = parseInt(ultimaCelda.dataset.row);
+                    const colUltima = parseInt(ultimaCelda.dataset.col);
+                    const rowActual = parseInt(celdaActual.dataset.row);
+                    const colActual = parseInt(celdaActual.dataset.col);
+
+                    if (
+                        (rowActual === rowUltima && Math.abs(colActual - colUltima) === 1) ||
+                        (colActual === colUltima && Math.abs(rowActual - rowUltima) === 1)
+                        // Opcional: incluir diagonales:
+                        // (Math.abs(rowActual - rowUltima) === 1 && Math.abs(colActual - colUltima) === 1)
+                    ) {
+                        celdaActual.classList.add('seleccionada');
+                        seleccion.push(celdaActual);
+                        palabraSeleccionada += celdaActual.textContent;
+                    }
+                }
+            }
+        });
+
+        function verificarPalabra(palabra) {
+            const listaItems = listaPalabras.querySelectorAll('li');
+            let todasEncontradas = true;
+            listaItems.forEach(item => {
+                if (item.dataset.palabra === palabra && !item.classList.contains('palabra-encontrada')) {
+                    item.classList.add('palabra-encontrada');
+                    seleccion.forEach(celda => {
+                        celda.classList.add('palabra-encontrada-en-sopa');
+                    });
+                    seleccion = [];
+                    palabraSeleccionada = "";
+                    primeraCelda = null;
+                }
+                if (!item.classList.contains('palabra-encontrada')) {
+                    todasEncontradas = false;
+                }
+            });
+
+            if (!listaItems.some(item => item.dataset.palabra === palabra && item.classList.contains('palabra-encontrada'))) {
+                celdas.forEach(celda => celda.classList.remove('seleccionada'));
+                seleccion = [];
+                palabraSeleccionada = "";
+                primeraCelda = null;
+            }
+
+            if (todasEncontradas && listaItems.length > 0) {
+                alert('¡Felicidades! ¡Has encontrado todas las palabras estelares!');
+            }
+        }
+    </script>
+</body>
+</html>

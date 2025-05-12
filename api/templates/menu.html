@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Portafolio de Videojuegos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .hero-body {
+            padding: 5rem 1.5rem;
+            text-align: center;
+        }
+
+        .game-card {
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .game-card img {
+            width: 100%;
+            display: block;
+        }
+
+        .game-info {
+            padding: 1.5rem;
+        }
+
+        /* Estilos personalizados adicionales si los necesitas */
+        .hero-body {
+            padding: 5rem 1.5rem;
+            text-align: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+            background-image: url('https://img.freepik.com/premium-psd/back-school-instagram-post-template-psd-design-social-media-square-layout-template-typography-sale_1048816-3477.jpg?ga=GA1.1.1950409224.1746844182&semt=ais_hybrid&w=740');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .game-card {
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .game-card img {
+            width: 100%;
+            display: block;
+        }
+
+        .game-info {
+            padding: 1.5rem;
+        }
+
+        /* Estilos para el menú fijo */
+        .navbar-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            /* Asegura que esté por encima de otros elementos */
+            transition: background-color 0.3s ease-in-out, padding 0.3s ease-in-out;
+            background-color: transparent;
+            /* Inicialmente transparente */
+            padding: 20px 0;
+            /* Altura inicial */
+        }
+
+        .navbar-fixed.scrolled {
+            background-color: rgba(52, 58, 64, 0.9);
+            /* Color al hacer scroll (gris oscuro con transparencia) */
+            padding: 10px 0;
+            /* Altura reducida al hacer scroll */
+        }
+
+        .navbar-fixed .navbar-item,
+        .navbar-fixed .navbar-brand .navbar-item {
+            transition: color 0.3s ease-in-out;
+            color: #00d1b2;
+            /* Color de texto inicial */
+        }
+
+        .navbar-fixed.scrolled .navbar-item,
+        .navbar-fixed.scrolled .navbar-brand .navbar-item {
+            color: #00d1b2;
+            /* Color de texto al hacer scroll (gris claro) */
+        }
+
+        /* Asegurar que el contenido no quede oculto detrás del menú fijo */
+        body {
+            padding-top: 60px;
+            /* Ajusta este valor según la altura inicial de tu menú */
+        }
+
+        .hero.is-fullheight {
+            margin-top: -60px;
+            /* Compensar el padding-top del body para el hero */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-head nav {
+            background: transparent !important;
+            /* Asegurar que la nav dentro del hero sea transparente inicialmente */
+        }
+    </style>
+</head>
+
+<body>
+    <section class="hero is-primary is-fullheight" id="inicio">
+        <div class="hero-head">
+            <nav class="navbar navbar-fixed">
+                <div class="container">
+                    <div class="navbar-brand has-text-black has-text-weight-bold">
+                        <a class="navbar-item" href="#">
+                           Portafolio de  <span class="has-text-primary ml-1"><strong>{{ user.username | upper }}</strong></span>
+                        </a>
+                        <span class="navbar-burger" data-target="navbarMenu">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </div>
+                    <div id="navbarMenu" class="navbar-menu has-text-black has-text-weight-bold">
+                        <div class="navbar-end">
+                            <a class="navbar-item" href="#inicio">
+                                Inicio
+                            </a>
+                            <a class="navbar-item" href="#proyectos">
+                                Proyectos
+                            </a>
+                            <a class="navbar-item" href="#contacto">
+                                Contacto
+                            </a>
+                            {% if request.user.is_authenticated %}
+                            <a class="navbar-item button is-info my-1" href="{% url 'close' %}">
+                                Cerrar
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title">
+                    ¡Explora este grupo de videojuegos!
+                </h1>
+                <h2 class="subtitle">
+                    Una colección de creatividad y pasiones.
+                </h2>
+                <a class="button is-primary is-large" href="#proyectos">Ver Juegos</a>
+            </div>
+        </div>
+
+        <div class="hero-footer">
+        </div>
+    </section>
+
+    <section class="section" id="proyectos">
+        <div class="container">
+            <h2 class="title is-2 has-text-centered">Lista de Juegos</h2>
+            <div class="columns is-multiline">
+                <div class="column is-one-third">
+                    <div class="card game-card">
+                        <div class="card-image">
+                            <figure class="image is-4by3">
+                                <img src="https://img.freepik.com/premium-vector/seamless-pattern-with-exotic-trees-animals_460840-1532.jpg?ga=GA1.1.1950409224.1746844182&semt=ais_hybrid&w=740"
+                                    alt="Imagen del Juego 1">
+                            </figure>
+                        </div>
+                        <div class="card-content game-info">
+                            <h3 class="title is-4">Palabras fijas</h3>
+                            <p class="subtitle is-6">El juego usa Tailwind como recurso de diseño.</p>
+                            <p>Busca las palabras listadas, reta tu cerebro con este divertido juego.</p>
+                            <a href="/bootstrap/list" class="button is-info my-3">Juegame</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-one-third">
+                    <div class="card game-card">
+                        <div class="card-image">
+                            <figure class="image is-4by3">
+                                <img src="https://img.freepik.com/premium-vector/tropical-jungle-safari-animals-bird-illustration-mural-pattern_109646-182.jpg"
+                                    alt="Imagen del Juego 2">
+                            </figure>
+                        </div>
+                        <div class="card-content game-info">
+                            <h3 class="title is-4">Cambia palabras</h3>
+                            <p class="subtitle is-6">El juego usa Bootstrap para el diseño.</p>
+                            <p>Escribe las palabras que deseas ingresar a las piscina, reta tu mente cambia la dimensión.</p>
+                            <a href="/tailwind/find" class="button is-info my-3">Juegame</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-one-third">
+                    <div class="card game-card">
+                        <div class="card-image">
+                            <figure class="image is-4by3">
+                                <img src="https://img.freepik.com/premium-photo/colorful-jungle-scene-with-animals-birds_900396-52447.jpg?ga=GA1.1.1950409224.1746844182&semt=ais_hybrid&w=740"
+                                    alt="Imagen del Juego 3">
+                            </figure>
+                        </div>
+                        <div class="card-content game-info">
+                            <h3 class="title is-4">Llama palabras</h3>
+                            <p class="subtitle is-6">El juego usa Bulma para el diseño.</p>
+                            <p>Carga la vista para que se muestren las pabras de forma aleatoria reta tu capacidad.</p>
+                            <a class="button is-info my-3">Juegame</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </section>
+
+    <section class="section" id="contacto">
+        <div class="container">
+            <h2 class="title is-2 has-text-centered">Guía de usuarios</h2>
+            <div class="columns is-centered">
+                <div class="column is-half">
+                    <p class="has-text-centered">¡Hablemos! Si tienes alguna pregunta o propuesta, no dudes en
+                        contactarme, o mira estas guías que te ayudaran con la diversión.</p>
+                    <div class="columns is-multiline is-mobile m-4">
+                        <div class="column">
+                            Documento: Guia de usuario <i class="fa fa-arrow-right"></i>
+                        </div>
+                        <div class="column has-text-right">
+                            <strong><a href="{% static 'doc/guia.docx' %}">Guía de usuario</a></strong>
+                        </div>
+                    </div>
+                     <div class="columns is-multiline is-mobile m-4">
+                        <div class="column">
+                            Envíanos tus comentatios a <i class="fa fa-arrow-right"></i>
+                        </div>
+                        <div class="column has-text-right">
+                            <strong><a href="mailto:bateroteso@hotmail.com">Correo del master</a></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                © 2025 <strong>Portafolio de Videojuegos</strong>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Funcionalidad del navbar burger
+            const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+            $navbarBurgers.forEach(el => {
+                el.addEventListener('click', () => {
+                    const target = el.dataset.target;
+                    const $target = document.getElementById(target);
+                    el.classList.toggle('is-active');
+                    $target.classList.toggle('is-active');
+                });
+            });
+
+            // Desplazamiento suave al hacer clic en los enlaces de navegación
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Cambiar la clase de la navbar al hacer scroll
+            const navbar = document.querySelector('.navbar-fixed');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) { // Puedes ajustar este valor para cuando quieres que cambie
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bulma@0.9.4/bulma.min.js"></script>
+</body>
+
+</html>
