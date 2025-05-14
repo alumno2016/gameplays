@@ -1,3 +1,7 @@
+# Documento guía
+Para la visualuzación del documento guía debe instalar el proyecto. El menu, en la zona de contactos presione el botón y le descargara el documento en formato word.
+El documento se encuentra en el siguiente en enlace [soup/static/doc/guia.docx](https://github.com/alumno2016/gameplays/blob/main/soup/static/doc/guia.docx).
+
 ## Tabla de Contenidos
 
 - [Descripción](#descripción)
